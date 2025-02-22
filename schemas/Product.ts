@@ -28,10 +28,11 @@ const Product: SchemaTypeDefinition = {
       validation: Rule => Rule.required().min(1)
     },
     {
-      name: 'numberOfPlaces',
-      title: 'Number of Places',
-      type: 'number',
-      validation: Rule => Rule.required().min(1)
+      name: 'category',
+      title: 'Category',
+      type: 'reference',
+      to: [{ type: 'category' }],
+      validation: Rule => Rule.required()
     },
     {
       name: 'price',
@@ -66,21 +67,22 @@ const Product: SchemaTypeDefinition = {
   preview: {
     select: {
       title: 'name',
-      description: "description",
-      price: "price.basePrice",
-      discount: "price.discountPercentage",
+      description: 'description',
+      price: 'price.basePrice',
+      discount: 'price.discountPercentage',
       media: 'images.0.asset',
+      category: 'category.title'
     },
     prepare(selection) {
-      const { title, description, price, discount, media } = selection
+      const { title, description, price, discount, media, category } = selection
       return {
         title: title,
-        subtitle: `${price} DZD (${discount}% OFF)`,
+        subtitle: `${category ? category + ' | ' : ''}${price} DZD (${discount}% OFF)`,
         subtitle2: description,
         media: media,
       }
     }
-  },
+  }
 }
 
 export default Product
